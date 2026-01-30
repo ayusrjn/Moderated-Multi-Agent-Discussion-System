@@ -1,0 +1,5 @@
+google-generativeai
+pydantic
+python-dotenv
+colorama
+rich
