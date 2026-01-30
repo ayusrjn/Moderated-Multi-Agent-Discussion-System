@@ -1,13 +1,21 @@
 #!/bin/bash
-# Helper script to run the discussion system specifically handling local site-packages
+# Run script for Triadic Discussion System
+# Uses the local virtual environment 'env' exclusively
 
-# Get user site packages directory
-SITE_PACKAGES=$(python3 -m site --user-site)
+# Ensure we are using the virtual environment python
+VENV_PYTHON="./env/bin/python"
 
-# Add to PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:$SITE_PACKAGES
+if [ ! -f "$VENV_PYTHON" ]; then
+    echo "Error: Virtual environment not found at ./env"
+    echo "Please ensure the 'env' directory exists."
+    exit 1
+fi
 
-echo "Starting Triadic Discussion System..."
-echo "Using PYTHONPATH: $PYTHONPATH"
+# Prevent Python from looking at user site packages (avoids 3.10 vs 3.12 conflicts)
+export PYTHONNOUSERSITE=1
 
-python3 main.py
+# Clear PYTHONPATH to prevent leakage from other setups
+unset PYTHONPATH
+
+echo "Starting System using Isolated Environment..."
+"$VENV_PYTHON" main.py

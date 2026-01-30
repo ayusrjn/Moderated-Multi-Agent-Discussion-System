@@ -76,6 +76,13 @@ class ModeratorInterface:
              console.print(f"[bold red]{msg}[/bold red]")
 
         elif action == "QUIT" or action == "EXIT":
+            console.print("[dim]Saving session log...[/dim]")
+            try:
+                log_file = self.controller.save_session()
+                console.print(f"[green]Session saved to {log_file}[/green]")
+            except Exception as e:
+                console.print(f"[red]Failed to save session: {e}[/red]")
+            
             console.print("[bold]Terminating session.[/bold]")
             exit(0)
             

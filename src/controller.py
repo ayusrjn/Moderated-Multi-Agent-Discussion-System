@@ -1,7 +1,10 @@
-import google.generativeai as genai
+import json
+import time
 from typing import Dict, Optional
 from .models import ConversationState, AgentProfile, AgentRole, DiscussionPhase, Turn
 from .agent import LLMAgent
+import google.generativeai as genai
+
 
 class DiscussionController:
     def __init__(self, api_key: str):
@@ -112,3 +115,17 @@ class DiscussionController:
         msg = f"[SYSTEM COMMAND] {agent_name}, provide specific evidence/citations for your last claim."
         self.moderator_interject(msg)
         return f"Demanded evidence from {agent_name}"
+
+    def save_session(self, directory: str = "logs") -> str:
+        """Saves current state to a JSON file."""
+        import os
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        filename = f"{directory}/discussion_{timestamp}.json"
+        
+        with open(filename, 'w') as f:
+            f.write(self.state.model_dump_json(indent=2))
+            
+        return filename
